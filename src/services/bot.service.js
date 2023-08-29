@@ -17,7 +17,7 @@ class BotService {
     formData.append("photo", stream);
     formData.append(
       "caption",
-      "#" + fileName.split(".")[0].replace(/\s+/, "_"),
+      "#" + fileName.split(".")[0].trim().replace(/\s+/, " ").replace(" ", "_"),
     );
 
     return formData;
