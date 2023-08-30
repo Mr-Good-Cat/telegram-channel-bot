@@ -1,10 +1,4 @@
-SCRIPT_NAME='index.js';
-RUN=$(pgrep -f "$SCRIPT_NAME")
+#!/bin/sh
 
-if [ "$RUN" == "" ]; then
- cd "$HOME/path_to_root_dir" || exit
- node "$SCRIPT_NAME"
-else
- echo "Script is running"
-fi
-
+cd "$HOME/path_to_project_dir" || exit
+path_to_node "index.js"
