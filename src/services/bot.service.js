@@ -18,7 +18,12 @@ class BotService {
     formData.append(
       "caption",
       "#" +
-        fileName.split(".")[0].trim().replace(/\s+/, " ").replace(/\s/g, "_"),
+        fileName
+          .split(".")[0]
+          .replace(/[0-9]/g, "")
+          .trim()
+          .replace(/\s+/g, " ")
+          .replace(/\s/g, "_"),
     );
 
     return formData;
