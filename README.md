@@ -18,7 +18,7 @@ and TELEGRAM_CHANNEL_CHAT_ID is target channel (in the format @channelusername)
 ### Set up sending by time
 1. Create `cron.sh` file from `cron.example.sh`. For example `cp cron.example.sh cron.sh`
 2. In the `cron.sh`, change the path to your project and the path to your nodejs. For example, you clone repository to `~/project/channel` and path to you nodejs is `/root/.nvm/versions/node/v16.15.0/bin/node` so your file should look like this
-```dotenv
+```shell
 #!/bin/sh
 
 cd "$HOME/project/channel/telegram-channel-bot" || exit
