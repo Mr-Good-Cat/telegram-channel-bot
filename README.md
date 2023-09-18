@@ -14,8 +14,8 @@ TELEGRAM_CHANNEL_CHAT_ID=@channelusername
 where BOT_API_KEY is api key from [@BotFather](https://core.telegram.org/bots/tutorial#getting-ready) 
 and TELEGRAM_CHANNEL_CHAT_ID is target channel (in the format @channelusername)
 
-5. Upload photos to `src/image`
-6. Go to project root directory and run `node index.js`. The application should send a random image to your channel and remove it from the directory `src/image`
+5. Upload photos or/and videos (format mp4) to `src/content`
+6. Go to project root directory and run `node index.js`. The application should send a random image to your channel and remove it from the directory `src/content`
 
 ### Set up sending by time
 1. Create `cron.sh` file from `cron.example.sh`. For example `cp cron.example.sh cron.sh`
