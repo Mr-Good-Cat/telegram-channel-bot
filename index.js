@@ -6,13 +6,13 @@ const BotService = require("./src/services/bot.service");
 const fileService = new FileService();
 const botService = new BotService();
 
-const randomImage = fileService.getRandomImage();
+const randomFile = fileService.getRandomFile();
 
-if (!randomImage) {
+if (!randomFile) {
   return;
 }
 
 botService
-  .sendPhoto(randomImage)
-  .then(() => fileService.removeImage(randomImage.path))
+  .sendContent(randomFile)
+  .then(() => fileService.removeFile(randomFile.path))
   .catch(console.log);
