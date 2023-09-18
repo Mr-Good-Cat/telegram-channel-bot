@@ -1,31 +1,31 @@
 const fs = require("fs");
 const path = require("path");
 
-const IMG_DIR = "./src/image";
+const CONTENT_DIR = "./src/content";
 
 class FileService {
-  getRandomImage() {
-    const imageList = fs
-      .readdirSync(IMG_DIR)
+  getRandomFile() {
+    const fileList = fs
+      .readdirSync(CONTENT_DIR)
       .filter((fileName) => fileName !== ".gitignore");
 
-    if (!imageList.length) {
+    if (!fileList.length) {
       return null;
     }
 
-    const randomImageName =
-      imageList[Math.floor(Math.random() * imageList.length)];
+    const randomFileName =
+      fileList[Math.floor(Math.random() * fileList.length)];
 
-    const imagePath = path.join(IMG_DIR, randomImageName);
+    const filePath = path.join(CONTENT_DIR, randomFileName);
 
     return {
-      path: imagePath,
-      fileName: randomImageName,
-      stream: fs.createReadStream(imagePath),
+      path: filePath,
+      fileName: randomFileName,
+      stream: fs.createReadStream(filePath),
     };
   }
 
-  removeImage(path) {
+  removeFile(path) {
     fs.unlinkSync(path);
   }
 }
