@@ -35,6 +35,14 @@ class BotTelegram {
       },
     });
   }
+
+  sendVideo(formData) {
+    return this.#clientAxios._post("sendVideo", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 }
 
 module.exports = BotTelegram;
