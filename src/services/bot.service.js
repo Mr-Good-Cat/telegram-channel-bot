@@ -6,6 +6,8 @@ const VIDEO_FORMATS = ["mp4"];
 const FILE_TYPE_PHOTO = "photo";
 const FILE_TYPE_VIDEO = "video";
 
+const CAPTION_SEPARATORS = ["&", ",", " and "];
+
 class BotService {
   #telegramClient = new BotTelegram();
 
@@ -29,18 +31,33 @@ class BotService {
 
     formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
     formData.append(fileType, stream);
-    formData.append(
-      "caption",
-      "#" +
-        fileName
-          .split(".")[0]
-          .replace(/[0-9]/g, "")
-          .trim()
-          .replace(/\s+/g, " ")
-          .replace(/\s/g, "_"),
-    );
+    formData.append("caption", this.#createTagFromFileName(fileName));
 
     return formData;
+  }
+
+  #createTagFromFileName(fileName) {
+    let tagList = [];
+    const contentName = fileName
+      .split(".")[0]
+      .replace(/[0-9]/g, "")
+      .trim()
+      .replace(/\s+/g, " ");
+
+    for (const separator of CAPTION_SEPARATORS) {
+      if (contentName.includes(separator)) {
+        tagList = contentName.split(separator);
+        break;
+      }
+    }
+
+    if (!tagList.length) {
+      tagList.push(contentName);
+    }
+
+    return tagList
+      .map((tag) => "#" + tag.trim().replace(/[\s-]/g, "_"))
+      .join(" ");
   }
 
   #isVideo(fileName) {
