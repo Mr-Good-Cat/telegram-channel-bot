@@ -17,7 +17,13 @@ class BotTelegram {
   }
 
   getUpdates() {
-    return this.#clientAxios._get("getUpdates");
+    const params = {
+      timeout: 5,
+    };
+
+    const query = new URLSearchParams(params);
+
+    return this.#clientAxios._get(`getUpdates?${query}`);
   }
 
   sendMessage(text) {
@@ -38,6 +44,14 @@ class BotTelegram {
 
   sendVideo(formData) {
     return this.#clientAxios._post("sendVideo", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
+  sendAnimation(formData) {
+    return this.#clientAxios._post("sendAnimation", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

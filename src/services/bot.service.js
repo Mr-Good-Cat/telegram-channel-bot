@@ -1,5 +1,6 @@
 const FormData = require("form-data");
 const BotTelegram = require("../libs/telegram/bot.telegram");
+const { getTimestampInSec } = require("../helpers/date");
 
 const VIDEO_FORMATS = ["mp4"];
 
@@ -10,6 +11,33 @@ const CAPTION_SEPARATORS = ["&", ",", " and "];
 
 class BotService {
   #telegramClient = new BotTelegram();
+
+  async subscriberContent() {
+    const updates = await this.#telegramClient.getUpdates();
+
+    if (!updates.ok) {
+      return [];
+    }
+
+    const afterTimestamp =
+      getTimestampInSec() - parseInt(process.env.LIFETIME_SUBSCRIBER_CONTENT);
+
+    // console.dir(updates, { depth: 10 });
+
+    const onlyPhoto = updates.result
+      .filter((r) => !!r.message)
+      .map((r) => r.message)
+      .filter((m) => m.date >= afterTimestamp)
+      .filter((m) => !!m.photo);
+
+    const result = [];
+    for (const photo of onlyPhoto) {
+      const formData = this.#prepareSubscriberFile(photo);
+      result.push(this.#telegramClient.sendPhoto(formData));
+    }
+
+    return result;
+  }
 
   sendContent({ stream, fileName }) {
     const isVideo = this.#isVideo(fileName);
@@ -24,6 +52,19 @@ class BotService {
     }
 
     return this.#telegramClient.sendPhoto(formData);
+  }
+
+  #prepareSubscriberFile(file) {
+    const formData = new FormData();
+
+    formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
+    formData.append(FILE_TYPE_PHOTO, file.photo[0].file_id);
+
+    if (!!file.caption) {
+      formData.append("caption", file.caption);
+    }
+
+    return formData;
   }
 
   #prepareInputFile(fileName, stream, fileType) {
