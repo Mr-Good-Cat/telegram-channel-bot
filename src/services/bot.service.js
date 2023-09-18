@@ -5,6 +5,7 @@ const { getTimestampInSec } = require("../helpers/date");
 const VIDEO_FORMATS = ["mp4"];
 
 const FILE_TYPE_PHOTO = "photo";
+const FILE_TYPE_ANIMATION = "animation";
 const FILE_TYPE_VIDEO = "video";
 
 const CAPTION_SEPARATORS = ["&", ",", " and "];
@@ -22,18 +23,30 @@ class BotService {
     const afterTimestamp =
       getTimestampInSec() - parseInt(process.env.LIFETIME_SUBSCRIBER_CONTENT);
 
-    // console.dir(updates, { depth: 10 });
-
-    const onlyPhoto = updates.result
+    const onlyMessageWithFile = updates.result
       .filter((r) => !!r.message)
       .map((r) => r.message)
       .filter((m) => m.date >= afterTimestamp)
-      .filter((m) => !!m.photo);
+      .filter((m) => !!m.photo || !!m.animation || !!m.video);
 
     const result = [];
-    for (const photo of onlyPhoto) {
-      const formData = this.#prepareSubscriberFile(photo);
-      result.push(this.#telegramClient.sendPhoto(formData));
+    for (const file of onlyMessageWithFile) {
+      const formData = this.#prepareSubscriberFile(file);
+      const fileType = this.#defineSubscriberFileType(file);
+
+      if (fileType === FILE_TYPE_PHOTO) {
+        result.push(this.#telegramClient.sendPhoto(formData));
+        continue;
+      }
+
+      if (fileType === FILE_TYPE_VIDEO) {
+        result.push(this.#telegramClient.sendVideo(formData));
+        continue;
+      }
+
+      if (fileType === FILE_TYPE_ANIMATION) {
+        result.push(this.#telegramClient.sendAnimation(formData));
+      }
     }
 
     return result;
@@ -58,7 +71,10 @@ class BotService {
     const formData = new FormData();
 
     formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
-    formData.append(FILE_TYPE_PHOTO, file.photo[0].file_id);
+    formData.append(
+      this.#defineSubscriberFileType(file),
+      this.#getSubscriberFileId(file),
+    );
 
     if (!!file.caption) {
       formData.append("caption", file.caption);
@@ -103,6 +119,39 @@ class BotService {
 
   #isVideo(fileName) {
     return VIDEO_FORMATS.includes(fileName.split(".").pop());
+  }
+
+  #defineSubscriberFileType(file) {
+    if (!!file.photo) {
+      return FILE_TYPE_PHOTO;
+    }
+
+    if (!!file.animation) {
+      return FILE_TYPE_ANIMATION;
+    }
+
+    if (!!file.video) {
+      return FILE_TYPE_VIDEO;
+    }
+
+    return null;
+  }
+
+  #getSubscriberFileId(file) {
+    const type = this.#defineSubscriberFileType(file);
+    if (type === FILE_TYPE_PHOTO) {
+      return file.photo[0].file_id;
+    }
+
+    if (type === FILE_TYPE_ANIMATION) {
+      return file.animation.file_id;
+    }
+
+    if (type === FILE_TYPE_VIDEO) {
+      return file.video.file_id;
+    }
+
+    return null;
   }
 }
 
