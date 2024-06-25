@@ -24,7 +24,7 @@ class BotService {
       const formData = new FormData();
       formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
 
-      const media = images.map((img, index) => {
+      const media = images.map((img) => {
         const mediaImg = {
           type: "photo",
           media: img,
