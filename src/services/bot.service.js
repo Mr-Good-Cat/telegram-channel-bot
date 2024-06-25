@@ -5,6 +5,7 @@ const SubscriberContentFactory = require("../factories/subscriber-content.factor
 const {
   FILE_TYPE_PHOTO,
   FILE_TYPE_VIDEO,
+  FILE_TYPE_MEDIA,
 } = require("../libs/telegram/constants");
 
 const VIDEO_FORMATS = ["mp4"];
@@ -13,6 +14,34 @@ const CAPTION_SEPARATORS = ["&", ",", " and "];
 
 class BotService {
   #telegramClient = new BotTelegram();
+
+  async sendParsedContent({ name, images }) {
+    if (!images.length) {
+      return;
+    }
+
+    if (images.length > 1) {
+      const formData = new FormData();
+      formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
+
+      const media = images.map((img, index) => {
+        const mediaImg = {
+          type: "photo",
+          media: img,
+        };
+
+        mediaImg.caption = this.#createTagFromFileName(name);
+        return mediaImg;
+      });
+
+      formData.append(FILE_TYPE_MEDIA, JSON.stringify(media));
+
+      return this.#telegramClient.sendMediaGroup(formData);
+    }
+
+    const formData = this.#prepareInputFile(name, images[0], FILE_TYPE_PHOTO);
+    return this.#telegramClient.sendPhoto(formData);
+  }
 
   async subscriberContent() {
     const updates = await this.#telegramClient.getUpdates();
