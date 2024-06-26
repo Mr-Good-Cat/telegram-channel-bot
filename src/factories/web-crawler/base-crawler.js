@@ -18,6 +18,10 @@ class BaseCrawler {
     return this.#client._get(url, config).then(this.#getDocument);
   }
 
+  getOrigin() {
+    return this.#client.getOrigin();
+  }
+
   #getDocument(html) {
     const { document } = new JSDOM(html).window;
     return document;
