@@ -26,7 +26,7 @@ class BotService {
 
       const media = images.map((img) => {
         const mediaImg = {
-          type: "photo",
+          type: FILE_TYPE_PHOTO,
           media: img,
         };
 
