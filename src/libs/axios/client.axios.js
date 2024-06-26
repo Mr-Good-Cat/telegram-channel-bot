@@ -11,6 +11,11 @@ class ClientAxios {
     this.signals = {};
   }
 
+  getOrigin() {
+    const url = new URL(this._client.defaults.baseURL);
+    return url.origin;
+  }
+
   abort(name) {
     if (!!this.signals[name]) {
       this.signals[name].abort();
