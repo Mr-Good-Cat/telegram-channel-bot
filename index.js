@@ -25,4 +25,8 @@ if (!randomFile) {
 botService
   .sendContent(randomFile)
   .then(() => fileService.removeFile(randomFile.path))
-  .catch(console.log);
+  .catch((error) => {
+    console.dir({ error }, { depth: 10 });
+    console.log("problem file was:", randomFile.path);
+    fileService.removeFile(randomFile.path);
+  });
