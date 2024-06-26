@@ -24,13 +24,15 @@ class BotService {
       const formData = new FormData();
       formData.append("chat_id", process.env.TELEGRAM_CHANNEL_CHAT_ID);
 
-      const media = images.map((img) => {
+      const media = images.map((img, index) => {
         const mediaImg = {
           type: FILE_TYPE_PHOTO,
           media: img,
         };
 
-        mediaImg.caption = this.#createTagFromFileName(name);
+        if (index === 0) {
+          mediaImg.caption = this.#createTagFromFileName(name);
+        }
         return mediaImg;
       });
 
