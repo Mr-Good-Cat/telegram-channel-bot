@@ -1,14 +1,25 @@
 const BaseCrawler = require("./base-crawler");
 const { getRandomElement } = require("../../helpers/array");
+const { getRandomInt } = require("../../helpers/number");
 
 class EliteBabesCrawler extends BaseCrawler {
+  #_websiteUrl;
   constructor(websiteUrl) {
     super(websiteUrl);
+
+    this.#_websiteUrl = websiteUrl;
   }
 
   async run() {
     const result = { name: "noname", images: [] };
-    const girlListDocument = await this.requestPage(`/`);
+
+    let page = "/";
+    if (this.#_websiteUrl === this.getOrigin()) {
+      const randomPage = getRandomInt(1, 6);
+      page = randomPage === 1 ? page : `/page/${randomPage}`;
+    }
+
+    const girlListDocument = await this.requestPage(page);
 
     const dataFromGirlListDocument =
       this.#getDataFromGirlListDocument(girlListDocument);
@@ -64,7 +75,7 @@ class EliteBabesCrawler extends BaseCrawler {
 
     if (h1) {
       const h1Text = h1.innerText || h1.textContent;
-      result.name = h1Text.split("in")[0];
+      result.name = h1Text.split(" in ")[0];
     }
 
     const links = girlPageDocument
