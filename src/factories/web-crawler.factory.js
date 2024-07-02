@@ -20,17 +20,9 @@ const CRAWLER_LIST = [
   new EliteBabesCrawler("https://www.femjoyhunter.com/updates/sort/newest"),
   new EliteBabesCrawler("https://www.femjoyhunter.com/updates/sort/popular"),
 
-  new EliteBabesCrawler("https://www.xarthunter.com/"),
-  new EliteBabesCrawler("https://www.xarthunter.com/updates/sort/newest"),
-  new EliteBabesCrawler("https://www.xarthunter.com/updates/sort/popular"),
-
   new EliteBabesCrawler("https://www.ftvhunter.com/"),
   new EliteBabesCrawler("https://www.ftvhunter.com/updates/sort/newest"),
   new EliteBabesCrawler("https://www.ftvhunter.com/updates/sort/popular"),
-
-  new EliteBabesCrawler("https://www.joymiihub.com/"),
-  new EliteBabesCrawler("https://www.joymiihub.com/updates/sort/newest"),
-  new EliteBabesCrawler("https://www.joymiihub.com/updates/sort/popular"),
 ];
 
 class WebCrawlerFactory {
